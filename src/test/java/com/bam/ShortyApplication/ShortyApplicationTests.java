@@ -1,13 +1,10 @@
-package com.bam.demourlshortener;
+package com.bam.ShortyApplication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoUrlShortenerApplicationTests {
-
+class ShortyApplicationTests {
     @Test
-    void contextLoads() {
-    }
-
+    void contextLoads() {}
 }
