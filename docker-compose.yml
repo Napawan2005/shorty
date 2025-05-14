@@ -1,0 +1,36 @@
+version: '3.8'                 # Compose file format v3.8 :contentReference[oaicite:0]{index=0}
+
+services:
+  db:
+    image: postgres:15         # Official PostgreSQL image :contentReference[oaicite:1]{index=1}
+    restart: always
+    environment:
+      POSTGRES_DB: shortydb
+      POSTGRES_USER: shorty_user
+      POSTGRES_PASSWORD: shorty_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  app:
+    build: .                   # Builds from Dockerfile in project root :contentReference[oaicite:2]{index=2}
+    image: shorty:latest
+    depends_on:
+      - db                     # Ensures db starts before app :contentReference[oaicite:3]{index=3}
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shorty
+      SPRING_DATASOURCE_USERNAME: shorty_user
+      SPRING_DATASOURCE_PASSWORD: shorty_pass
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+
+networks:
+  backend:

@@ -10,18 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 
 @RestController
 @RequestMapping("/api/v1/shortener")
 @RequiredArgsConstructor
 public class CreateShortenerController {
     private final ShortenerService service;
-
-    @Value("${server.address}")
-    private String serverAddress;
-
-    @Value("${server.port}")
-    private int serverPort;
 
     @PostMapping
     public ResponseEntity<ShortenResponse> create(@Validated @RequestBody ShortenRequest request)
@@ -33,9 +29,17 @@ public class CreateShortenerController {
 
         sw.stop();
         long totalTimeMs = sw.getTotalTimeMillis();
+
+        // inside your controller/service method, with HttpServletRequest injected
+        String uri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()        // grabs scheme + host + port + context path
+                .path("/{code}")
+                .buildAndExpand(shortCode)
+                .toUriString();
+
         return ResponseEntity.ok(
                 new ShortenResponse(
-                        "http://" + this.serverAddress + ":" + this.serverPort + "/" + shortCode,
+                        uri,
                         String.format("%.3f", totalTimeMs / 1000.0)
                 )
         );

@@ -19,6 +19,7 @@ public class ShortenerService {
     private static final int CODE_BYTES = 6;
 
     public String createShortener(ShortenRequest req) {
+
         if (req.getCustom_alias() != null && repo.existsByShortCode(req.getCustom_alias())) {
             throw new AliasAlreadyExistsException();
         }
